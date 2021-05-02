@@ -18,7 +18,7 @@ import static org.openjdk.jcstress.annotations.Expect.FORBIDDEN;
 public class SequenceStressVarHandle
 {
     /**
-     * `SequenceVarHandle::incrementAndGet` is atomic and should never lose an update, even with multiple threads racing
+     * `SequenceVarHandle::incrementAndGet` is atomic and should never lose an update, even with multiple threads racing.
      */
     @JCStressTest
     @Outcome(id = "1", expect = FORBIDDEN, desc = "One update lost.")
@@ -41,14 +41,14 @@ public class SequenceStressVarHandle
         }
 
         @Arbiter
-        public void arbiter(J_Result r)
+        public void arbiter(final J_Result r)
         {
             r.r1 = sequence.get();
         }
     }
 
     /**
-     * `SequenceVarHandle::compareAndSet` is atomic and should never lose an update, even with multiple threads racing
+     * `SequenceVarHandle::compareAndSet` is atomic and should never lose an update, even with multiple threads racing.
      */
     @JCStressTest
     @Outcome(id = {"true, false, 10", "false, true, 20"}, expect = ACCEPTABLE, desc = "Either updated.")
@@ -59,26 +59,26 @@ public class SequenceStressVarHandle
         SequenceVarHandle sequence = new SequenceVarHandle(0);
 
         @Actor
-        public void actor1(ZZJ_Result r)
+        public void actor1(final ZZJ_Result r)
         {
             r.r1 = sequence.compareAndSet(0, 10);
         }
 
         @Actor
-        public void actor2(ZZJ_Result r)
+        public void actor2(final ZZJ_Result r)
         {
             r.r2 = sequence.compareAndSet(0, 20);
         }
 
         @Arbiter
-        public void arbiter(ZZJ_Result r)
+        public void arbiter(final ZZJ_Result r)
         {
             r.r3 = sequence.get();
         }
     }
 
     /**
-     * `SequenceVarHandle::addAndGet` is atomic and should never lose an update, even with multiple threads racing
+     * `SequenceVarHandle::addAndGet` is atomic and should never lose an update, even with multiple threads racing.
      */
     @JCStressTest
     @Outcome(id = "10", expect = FORBIDDEN, desc = "One update lost.")
@@ -102,7 +102,7 @@ public class SequenceStressVarHandle
         }
 
         @Arbiter
-        public void arbiter(J_Result r)
+        public void arbiter(final J_Result r)
         {
             r.r1 = sequence.get();
         }
@@ -130,7 +130,7 @@ public class SequenceStressVarHandle
         }
 
         @Actor
-        public void reader(J_Result r)
+        public void reader(final J_Result r)
         {
             r.r1 = sequence.get();
         }
@@ -157,7 +157,7 @@ public class SequenceStressVarHandle
         }
 
         @Actor
-        public void reader(J_Result r)
+        public void reader(final J_Result r)
         {
             r.r1 = sequence.get();
         }
@@ -184,7 +184,7 @@ public class SequenceStressVarHandle
         }
 
         @Actor
-        public void reader(J_Result r)
+        public void reader(final J_Result r)
         {
             r.r1 = sequence.get();
         }
@@ -219,7 +219,7 @@ public class SequenceStressVarHandle
         }
 
         @Actor
-        public void actor2(JJ_Result r)
+        public void actor2(final JJ_Result r)
         {
             Holder h1 = this.h1;
             Holder h2 = this.h2;
@@ -233,8 +233,8 @@ public class SequenceStressVarHandle
     /**
      * The value field in SequenceVarHandle is volatile so we should never see an update to it without seeing the update to a
      * previously set value also.
-     * <p>
-     * If the value was not volatile there would be no ordering rules stopping it being seen updated before the
+     *
+     * <p>If the value was not volatile there would be no ordering rules stopping it being seen updated before the
      * other value.
      */
     @JCStressTest
@@ -256,7 +256,7 @@ public class SequenceStressVarHandle
         }
 
         @Actor
-        public void actor2(JJ_Result r)
+        public void actor2(final JJ_Result r)
         {
             r.r1 = y.get();
             r.r2 = x;
@@ -266,11 +266,11 @@ public class SequenceStressVarHandle
     /**
      * The value field in SequenceVarHandle is volatile so we should never see an update to it without seeing the update to a
      * previously set value also.
-     * <p>
-     * If the value was not volatile there would be no ordering rules stopping it being seen updated before the
+     *
+     * <p>If the value was not volatile there would be no ordering rules stopping it being seen updated before the
      * other value.
-     * <p>
-     * This is a property of the field, not a property of the method used to set the value of it.
+     *
+     * <p>This is a property of the field, not a property of the method used to set the value of it.
      */
     @JCStressTest
     @Outcome(id = "0, 0", expect = ACCEPTABLE, desc = "Doing both reads early.")
@@ -291,7 +291,7 @@ public class SequenceStressVarHandle
         }
 
         @Actor
-        public void actor2(JJ_Result r)
+        public void actor2(final JJ_Result r)
         {
             r.r1 = y.get();
             r.r2 = x;
@@ -300,7 +300,7 @@ public class SequenceStressVarHandle
 
 
     /**
-     * Volatile setting will experience total ordering
+     * Volatile setting will experience total ordering.
      */
     @JCStressTest
     @Outcome(id = {"0, 1", "1, 0", "1, 1"}, expect = ACCEPTABLE, desc = "Trivial under sequential consistency")
@@ -312,14 +312,14 @@ public class SequenceStressVarHandle
         SequenceVarHandle y = new SequenceVarHandle(0);
 
         @Actor
-        public void actor1(JJ_Result r)
+        public void actor1(final JJ_Result r)
         {
             x.setVolatile(1);
             r.r1 = y.get();
         }
 
         @Actor
-        public void actor2(JJ_Result r)
+        public void actor2(final JJ_Result r)
         {
             y.setVolatile(1);
             r.r2 = x.get();
@@ -328,7 +328,7 @@ public class SequenceStressVarHandle
     }
 
     /**
-     * Non-volatile setting will not experience total ordering, those gets can be re-ordered and happen before either set
+     * Non-volatile setting will not experience total ordering, those gets can be re-ordered and happen before either set.
      */
     @JCStressTest
     @Outcome(id = {"0, 1", "1, 0", "1, 1"}, expect = ACCEPTABLE, desc = "Trivial under sequential consistency")
@@ -340,14 +340,14 @@ public class SequenceStressVarHandle
         SequenceVarHandle y = new SequenceVarHandle(0);
 
         @Actor
-        public void actor1(JJ_Result r)
+        public void actor1(final JJ_Result r)
         {
             x.set(1);
             r.r1 = y.get();
         }
 
         @Actor
-        public void actor2(JJ_Result r)
+        public void actor2(final JJ_Result r)
         {
             y.set(1);
             r.r2 = x.get();

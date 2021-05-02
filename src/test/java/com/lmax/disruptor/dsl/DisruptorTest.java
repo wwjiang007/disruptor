@@ -50,6 +50,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -84,6 +85,16 @@ public class DisruptorTest
 
         disruptor.halt();
         executor.joinAllThreads();
+    }
+
+    @Test
+    public void shouldHaveStartedAfterStartCalled() throws Exception
+    {
+        assertFalse(disruptor.hasStarted(), "Should only be set to started after start is called");
+
+        disruptor.start();
+
+        assertTrue(disruptor.hasStarted(), "Should be set to started after start is called");
     }
 
     @Test
@@ -648,7 +659,7 @@ public class DisruptorTest
     private void assertProducerReaches(
         final StubPublisher stubPublisher,
         final int expectedPublicationCount,
-        boolean strict)
+        final boolean strict)
     {
         long loopStart = System.currentTimeMillis();
         while (stubPublisher.getPublicationCount() < expectedPublicationCount && System

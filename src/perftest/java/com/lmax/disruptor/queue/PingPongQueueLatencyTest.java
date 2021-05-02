@@ -15,12 +15,17 @@
  */
 package com.lmax.disruptor.queue;
 
-import java.io.PrintStream;
-import java.util.concurrent.*;
-
+import com.lmax.disruptor.util.DaemonThreadFactory;
 import org.HdrHistogram.Histogram;
 
-import com.lmax.disruptor.util.DaemonThreadFactory;
+import java.io.PrintStream;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 /**
  * <pre>
@@ -50,8 +55,8 @@ import com.lmax.disruptor.util.DaemonThreadFactory;
  * Q2 - PongQueue
  *
  * </pre>
- * <p>
- * Note: <b>This test is only useful on a system using an invariant TSC in user space from the System.nanoTime() call.</b>
+ *
+ * <p>Note: <b>This test is only useful on a system using an invariant TSC in user space from the System.nanoTime() call.</b>
  */
 public final class PingPongQueueLatencyTest
 {

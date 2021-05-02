@@ -34,7 +34,7 @@ class RhsPadding extends Value
 }
 
 /**
- * <p>Concurrent sequence class used for tracking the progress of
+ * Concurrent sequence class used for tracking the progress of
  * the ring buffer and event processors.  Support a number
  * of concurrent operations including CAS and order writes.
  *
@@ -127,7 +127,7 @@ public class Sequence extends RhsPadding
      */
     public boolean compareAndSet(final long expectedValue, final long newValue)
     {
-        return (boolean) VALUE_FIELD.compareAndSet(this, expectedValue, newValue);
+        return VALUE_FIELD.compareAndSet(this, expectedValue, newValue);
     }
 
     /**
@@ -148,15 +148,18 @@ public class Sequence extends RhsPadding
      */
     public long addAndGet(final long increment)
     {
-        long v;
-        do
-        {
-            v = value;
-            VarHandle.fullFence();
-        }
-        while (!compareAndSet(v, v + increment));
+        return (long) VALUE_FIELD.getAndAdd(this, increment) + increment;
+    }
 
-        return v;
+    /**
+     * Perform an atomic getAndAdd operation on the sequence.
+     *
+     * @param increment The value to add to the sequence.
+     * @return the value before increment
+     */
+    public long getAndAdd(final long increment)
+    {
+        return (long) VALUE_FIELD.getAndAdd(this, increment);
     }
 
     @Override

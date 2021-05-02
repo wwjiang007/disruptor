@@ -7,7 +7,8 @@ import org.openjdk.jcstress.annotations.Outcome;
 import org.openjdk.jcstress.annotations.State;
 import org.openjdk.jcstress.infra.results.ZZ_Result;
 
-import static org.openjdk.jcstress.annotations.Expect.*;
+import static org.openjdk.jcstress.annotations.Expect.ACCEPTABLE;
+import static org.openjdk.jcstress.annotations.Expect.FORBIDDEN;
 
 public final class MultiProducerSequencerUnsafeStress
 {
@@ -33,7 +34,7 @@ public final class MultiProducerSequencerUnsafeStress
         }
 
         @Actor
-        public void actor2(ZZ_Result r)
+        public void actor2(final ZZ_Result r)
         {
             // The load in isAvailable is a full store/load barrier, so any stores from actor1 should get flushed
             r.r2 = sequencer.isAvailable(2);
@@ -44,8 +45,8 @@ public final class MultiProducerSequencerUnsafeStress
     /**
      * The isAvailable implementation is volatile so we should never see an update to it without seeing the update to a
      * previously set value also.
-     * <p>
-     * If the value was not volatile there would be no ordering rules stopping it being seen updated before the
+     *
+     * <p>If the value was not volatile there would be no ordering rules stopping it being seen updated before the
      * other value.
      */
     @JCStressTest
@@ -67,7 +68,7 @@ public final class MultiProducerSequencerUnsafeStress
         }
 
         @Actor
-        public void actor2(ZZ_Result r)
+        public void actor2(final ZZ_Result r)
         {
             r.r1 = y.isAvailable(1);
             r.r2 = x;
@@ -102,7 +103,7 @@ public final class MultiProducerSequencerUnsafeStress
         }
 
         @Actor
-        public void actor2(ZZ_Result r)
+        public void actor2(final ZZ_Result r)
         {
             SameVolatileRead.Holder h1 = this.h1;
             SameVolatileRead.Holder h2 = this.h2;

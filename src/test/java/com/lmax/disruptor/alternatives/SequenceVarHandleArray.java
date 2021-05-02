@@ -5,7 +5,7 @@ import java.lang.invoke.VarHandle;
 
 
 /**
- * <p>Concurrent sequence class used for tracking the progress of
+ * Concurrent sequence class used for tracking the progress of
  * the ring buffer and event processors.  Support a number
  * of concurrent operations including CAS and order writes.
  *
@@ -83,7 +83,7 @@ public class SequenceVarHandleArray
      */
     public boolean compareAndSet(final long expectedValue, final long newValue)
     {
-        return (boolean) VALUE_FIELD.compareAndSet(this.paddedValue, VALUE_INDEX, expectedValue, newValue);
+        return VALUE_FIELD.compareAndSet(this.paddedValue, VALUE_INDEX, expectedValue, newValue);
     }
 
     /**
@@ -104,8 +104,7 @@ public class SequenceVarHandleArray
      */
     public long addAndGet(final long increment)
     {
-        final long oldValue = (Long) VALUE_FIELD.getAndAdd(this.paddedValue, VALUE_INDEX, increment);
-        return oldValue + increment;
+        return (long) VALUE_FIELD.getAndAdd(this.paddedValue, VALUE_INDEX, increment) + increment;
     }
 
     @Override

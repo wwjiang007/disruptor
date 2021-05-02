@@ -33,7 +33,7 @@ public final class MultiProducerSequencerVarHandleStress
         }
 
         @Actor
-        public void actor2(ZZ_Result r)
+        public void actor2(final ZZ_Result r)
         {
             r.r2 = sequencer.isAvailable(2);
             r.r1 = sequencer.isAvailable(1);
@@ -43,8 +43,8 @@ public final class MultiProducerSequencerVarHandleStress
     /**
      * The isAvailable implementation is volatile so we should never see an update to it without seeing the update to a
      * previously set value also.
-     * <p>
-     * If the value was not volatile there would be no ordering rules stopping it being seen updated before the
+     *
+     * <p>If the value was not volatile there would be no ordering rules stopping it being seen updated before the
      * other value.
      */
     @JCStressTest
@@ -66,7 +66,7 @@ public final class MultiProducerSequencerVarHandleStress
         }
 
         @Actor
-        public void actor2(ZZ_Result r)
+        public void actor2(final ZZ_Result r)
         {
             r.r1 = y.isAvailable(1);
             r.r2 = x;
@@ -101,7 +101,7 @@ public final class MultiProducerSequencerVarHandleStress
         }
 
         @Actor
-        public void actor2(ZZ_Result r)
+        public void actor2(final ZZ_Result r)
         {
             Holder h1 = this.h1;
             Holder h2 = this.h2;
